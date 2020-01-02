@@ -1,6 +1,5 @@
 from sys import platform
 from os import system as s
-from gtts import gTTS as g
 from colorama import init, Fore, Back, Style
 init()
 from termcolor import colored
