@@ -1,9 +1,15 @@
 from sys import platform
+import os
 from os import system as s
+from gtts import gTTS 
 from colorama import init, Fore, Back, Style
 init()
 from termcolor import colored
 from time import sleep
+import pygame as pg
+import time as t
+
+language='en'
 
 def clear():
 	if (platform=="linux" or platform=="linux2"):
@@ -15,11 +21,40 @@ def colour(str = "",color = "red"):
 	print (colored(str,color),end = "")
 
 #alpha = list(string.ascii_uppercase)
-
+def play_sound(music_file, volume=0.8):
+    '''
+    stream music with mixer.music module in a blocking manner
+    this will stream the sound from disk while playing
+    '''
+    # set up the mixer
+    freq = 25000   # audio CD quality, basically the speed in which the audio is played
+    bitsize = -16    # unsigned 16 bit
+    channels = 2     # 1 is mono, 2 is stereo
+    buffer = 2500    # number of samples (experiment to get best sound)
+    pg.mixer.init(freq, bitsize, channels, buffer,)
+    # volume value 0.0 to 1.0
+    pg.mixer.music.set_volume(volume)
+    clock = pg.time.Clock()
+    try:
+        pg.mixer.music.load(music_file)
+        print("Music file {} loaded!".format(music_file))
+    except pg.error:
+        print("File {} not found! ({})".format(music_file, pg.get_error()))
+        return
+    pg.mixer.music.play()
+    while pg.mixer.music.get_busy():
+        # check if playback has finished
+        clock.tick(300)
+	
 clear()
 
 name1 = input("\nEnter the first name : ").upper()
 name2 = input("\n\nEnter the second name : ").upper()
+introd='Welcome to the game '+name1+' and '+name2+' Hope you enjoy it.'
+myobj = gTTS(text=introd, lang=language, slow=False)
+myobj.save("welcome.mp3") 
+play_sound('welcome.mp3')
+
 
 list1 = [i for i in name1]
 list2 = [i for i in name2]
@@ -157,13 +192,36 @@ print ("\n\n\n\t\t\t\t\tHi, %s and %s!! Your results are below : "%(name1,name2)
 
 if FLAMES[0]=="F":
 	print ("\n\n\n\t\t\t\t\t\t\tYou both are FRIENDS!! :) \n\n\n\n\n\n\n\n")
+	restext = 'You both are Friends'
+	myobj = gTTS(text=restext, lang=language, slow=False)
+	myobj.save("result.mp3")
 elif FLAMES[0]=="L":
 	print ("\n\n\n\t\t\t\t\t\t\tYou both are LOVERS!! ♥‿♥ \n\n\n\n\n\n\n\n")
+	restext = 'You both are Lovers uwu'
+	myobj = gTTS(text=restext, lang=language, slow=False)
+	myobj.save("result.mp3") 
 elif FLAMES[0]=="A":
 	print ("\n\n\n\t\t\t\t\t\t\tYou both have an AFFAIR!! 😈 \n\n\n\n\n\n\n\n")
+	restext = 'You both have an affair nice'
+	myobj = gTTS(text=restext, lang=language, slow=False)
+	myobj.save("result.mp3") 
 elif FLAMES[0]=="M":
 	print ("\n\n\n\t\t\t\t\t\t\tYou both will MARRY!! :O \n\n\n\n\n\n\n\n")
+	restext = 'Congrats, you will marry each other'
+	myobj = gTTS(text=restext, lang=language, slow=False)
+	myobj.save("result.mp3") 
 elif FLAMES[0]=="E":
 	print ("\n\n\n\t\t\t\t\t\t\tYou both are ENEMIES!! :( \n\n\n\n\n\n\n\n")
+	restext = 'You both are enemies. Hurry, grab a sword'
+	myobj = gTTS(text=restext, lang=language, slow=False)
+	myobj.save("result.mp3") 
 elif FLAMES[0]=="S":
 	print ("\n\n\n\t\t\t\t\t\t\tYou both are SIBLINGS!! \n\n\n\n\n\n\n\n")
+	restext = 'You both are Siblings. No incest wink wink'
+	myobj = gTTS(text=restext, lang=language, slow=False)
+	myobj.save("result.mp3") 
+
+play_sound('result.mp3')
+t.sleep(3)
+os.remove('welcome.mp3')
+os.remove('result.mp3')
